@@ -85,12 +85,17 @@ export default function ChatbotPage({
     _uid: product._uid || `chatbot_${(product.name || "").replace(/\s+/g, "_")}`,
   });
 
-  const findCartItem = (product) =>
-    cart.find(
-      (c) =>
-        c._uid === product._uid ||
-        c.name?.toLowerCase() === product.name?.toLowerCase()
-    );
+const findCartItem = (product) => {
+  if (!product?.name) return undefined;
+  const needle = product.name.toLowerCase().trim();
+  return cart.find(
+    (c) =>
+      c._uid === product._uid ||
+      c.name?.toLowerCase().trim() === needle ||
+      c.name?.toLowerCase().trim().includes(needle) ||
+      needle.includes(c.name?.toLowerCase().trim())
+  );
+};
 
   const handleChatAddToCart = (product) => {
     if (onAddToCart) onAddToCart(ensureUid(product));
